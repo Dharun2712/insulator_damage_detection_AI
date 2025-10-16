@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outdoor Insulator Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Outdoor Disc Insulator Monitor</h1>
+        <p>Upload an image to check the insulator condition using AI.</p>
+
+        <form method="POST" enctype="multipart/form-data">
+            <label class="upload-box">
+                <input type="file" name="file" accept="image/*" required onchange="previewImage(this)">
+                <span>📤 Choose an image</span>
+            </label>
+            <div id="imagePreview" style="display: none;" class="result-card">
+                <h2>Selected Image</h2>
+                <img id="preview" src="#" alt="Preview">
+            </div>
+            <button type="submit">Analyze Condition</button>
+        </form>
+
+        <script>
+            function previewImage(input) {
+                var preview = document.getElementById('preview');
+                var previewDiv = document.getElementById('imagePreview');
+                var resultCards = document.getElementsByClassName('result-card');
+                
+                // Hide any existing result cards that show previous analysis
+                for(var i = 0; i < resultCards.length; i++) {
+                    if(resultCards[i].id !== 'imagePreview') {
+                        resultCards[i].style.display = 'none';
+                    }
+                }
+                
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        previewDiv.style.display = 'block';
+                    }
+                    
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
+
+        {% if filename %}
+        <div class="result-card">
+            <h2>Result</h2>
+            <img src="{{ filename }}" alt="Uploaded Image" style="max-width: 100%; height: auto;">
+            <p class="result-text">{{ result }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
